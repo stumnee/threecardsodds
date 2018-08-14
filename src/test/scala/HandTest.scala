@@ -114,4 +114,36 @@ class HandTest extends FunSuite {
     // 4S 4C 4D
     assert(new Hand(Array(41,2,15)).isTrips() == true)
   }
+
+  test("Strength Test") {
+    assert(Hand.fromStr("3c 8d 7s").handStrength == 6 * 169 + 5 * 13 + 1)
+    assert(Hand.fromStr("3c 8d 2s").handStrength == 6 * 169 + 1 * 13 + 0)
+    assert(Hand.fromStr("3c 8d Qd").handStrength == 10 * 169 + 6 * 13 + 1)
+    assert(Hand.fromStr("3c 4s 5s").handStrength == 3 * 169 + 2 * 13 + 1 + Hand.Straight)
+    assert(Hand.fromStr("3c 8d As").handStrength == 12 * 169 + 6 * 13 + 1)
+    assert(Hand.fromStr("3s 8s As").handStrength == 12 * 169 + 6 * 13 + 1 + Hand.Flush)
+    assert(Hand.fromStr("3s 3d 3h").handStrength == 1 * 169 + 1 * 13 + 1 + Hand.Trips)
+    assert(Hand.fromStr("3s 3d Ad").handStrength == 1 * 169 + 1 * 13 + 12 + Hand.Pair)
+    assert(Hand.fromStr("4s 4d Kd").handStrength == 2 * 169 + 2 * 13 + 11 + Hand.Pair)
+    assert(Hand.fromStr("4s 4d Kd").handStrength > Hand.fromStr("3s 3d Ad").handStrength)
+    assert(Hand.fromStr("4s 4d Kd").handStrength > Hand.fromStr("4h 4s Qd").handStrength)
+    assert(Hand.fromStr("4s 4d Qh").handStrength == Hand.fromStr("4h 4s Qd").handStrength)
+    assert(Hand.fromStr("4s 4d Qh").handStrength == Hand.fromStr("Qs 4h 4s").handStrength)
+  }
+
+  test("Qualify Test") {
+    assert(Hand.fromStr("3c 8d 7s").isQualified == false)
+    assert(Hand.fromStr("3c 8d 2s").isQualified == false)
+    assert(Hand.fromStr("3c 8d Qd").isQualified == true)
+    assert(Hand.fromStr("3c 4s 5s").isQualified == true)
+    assert(Hand.fromStr("3c 8d As").isQualified == true)
+    assert(Hand.fromStr("3s 8s As").isQualified == true)
+    assert(Hand.fromStr("3s 3d 3h").isQualified == true)
+    assert(Hand.fromStr("3s 3d Ad").isQualified == true)
+    assert(Hand.fromStr("4s 4d Kd").isQualified == true)
+    assert(Hand.fromStr("4s 4d Kd").isQualified == true)
+    assert(Hand.fromStr("4s 4d Kd").isQualified == true)
+    assert(Hand.fromStr("4s 4d Qh").isQualified == true)
+    assert(Hand.fromStr("4s 4d Qh").isQualified == true)
+  }
 }

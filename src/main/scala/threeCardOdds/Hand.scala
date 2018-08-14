@@ -30,6 +30,10 @@ object Hand {
   def apply(cards: Array[Int]): Hand = {
     new Hand(cards)
   }
+
+  def fromStr(s: String): Hand = {
+    new Hand(s.split(" ").map(card => Numbers.indexOf(card.charAt(0)) + Suites.indexOf(card.charAt(1)) * 13).toArray )
+  }
 }
 class Hand (cards: Array[Int]) {
 
@@ -44,6 +48,8 @@ class Hand (cards: Array[Int]) {
 
   var strength = if (wheel) {
     13 * sorted(0) + 169 * sorted(1)
+  } else if (pair && sorted(0) == sorted(1)) { // example 22A
+    sorted(2) + sorted(0) * 13 + sorted(1) * 169
   } else {
     sorted(0) + sorted(1) * 13 + sorted(2) * 169
   }
@@ -67,7 +73,7 @@ class Hand (cards: Array[Int]) {
   }
 
   def isQualified(): Boolean = {
-    strength < 169 * Hand.Numbers.indexOf("K") // anything less than King high
+    strength > 169 * Hand.Numbers.indexOf("Q") // at least a Queen
   }
 
   def isPair(): Boolean = {
@@ -98,5 +104,4 @@ class Hand (cards: Array[Int]) {
     cards.map(c => Hand.Numbers.charAt(c % 13).toString +  Hand.Suites.charAt(c / 13)).mkString(" ") + " --  " + strength
   }
 
-  println(this)
 }
