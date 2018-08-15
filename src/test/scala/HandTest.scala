@@ -116,19 +116,19 @@ class HandTest extends FunSuite {
   }
 
   test("Strength Test") {
-    assert(Hand.fromStr("3c 8d 7s").handStrength == 6 * 169 + 5 * 13 + 1)
-    assert(Hand.fromStr("3c 8d 2s").handStrength == 6 * 169 + 1 * 13 + 0)
-    assert(Hand.fromStr("3c 8d Qd").handStrength == 10 * 169 + 6 * 13 + 1)
-    assert(Hand.fromStr("3c 4s 5s").handStrength == 3 * 169 + 2 * 13 + 1 + Hand.Straight)
-    assert(Hand.fromStr("3c 8d As").handStrength == 12 * 169 + 6 * 13 + 1)
-    assert(Hand.fromStr("3s 8s As").handStrength == 12 * 169 + 6 * 13 + 1 + Hand.Flush)
-    assert(Hand.fromStr("3s 3d 3h").handStrength == 1 * 169 + 1 * 13 + 1 + Hand.Trips)
-    assert(Hand.fromStr("3s 3d Ad").handStrength == 1 * 169 + 1 * 13 + 12 + Hand.Pair)
-    assert(Hand.fromStr("4s 4d Kd").handStrength == 2 * 169 + 2 * 13 + 11 + Hand.Pair)
-    assert(Hand.fromStr("4s 4d Kd").handStrength > Hand.fromStr("3s 3d Ad").handStrength)
-    assert(Hand.fromStr("4s 4d Kd").handStrength > Hand.fromStr("4h 4s Qd").handStrength)
-    assert(Hand.fromStr("4s 4d Qh").handStrength == Hand.fromStr("4h 4s Qd").handStrength)
-    assert(Hand.fromStr("4s 4d Qh").handStrength == Hand.fromStr("Qs 4h 4s").handStrength)
+    assert(Hand.fromStr("3c 8d 7s").strength == 6 * 169 + 5 * 13 + 1)
+    assert(Hand.fromStr("3c 8d 2s").strength == 6 * 169 + 1 * 13 + 0)
+    assert(Hand.fromStr("3c 8d Qd").strength == 10 * 169 + 6 * 13 + 1)
+    assert(Hand.fromStr("3c 4s 5s").strength == 3 * 169 + 2 * 13 + 1 + Hand.Straight)
+    assert(Hand.fromStr("3c 8d As").strength == 12 * 169 + 6 * 13 + 1)
+    assert(Hand.fromStr("3s 8s As").strength == 12 * 169 + 6 * 13 + 1 + Hand.Flush)
+    assert(Hand.fromStr("3s 3d 3h").strength == 1 * 169 + 1 * 13 + 1 + Hand.Trips)
+    assert(Hand.fromStr("3s 3d Ad").strength == 1 * 169 + 1 * 13 + 12 + Hand.Pair)
+    assert(Hand.fromStr("4s 4d Kd").strength == 2 * 169 + 2 * 13 + 11 + Hand.Pair)
+    assert(Hand.fromStr("4s 4d Kd").strength > Hand.fromStr("3s 3d Ad").strength)
+    assert(Hand.fromStr("4s 4d Kd").strength > Hand.fromStr("4h 4s Qd").strength)
+    assert(Hand.fromStr("4s 4d Qh").strength == Hand.fromStr("4h 4s Qd").strength)
+    assert(Hand.fromStr("4s 4d Qh").strength == Hand.fromStr("Qs 4h 4s").strength)
   }
 
   test("Qualify Test") {
@@ -145,5 +145,34 @@ class HandTest extends FunSuite {
     assert(Hand.fromStr("4s 4d Kd").isQualified == true)
     assert(Hand.fromStr("4s 4d Qh").isQualified == true)
     assert(Hand.fromStr("4s 4d Qh").isQualified == true)
+  }
+
+  test("Up card Queen or Better") {
+    assert(Hand.fromStr("3c 8d 7s").isUpCardQueenOrBetter == false)
+    assert(Hand.fromStr("3c 8d Qs").isUpCardQueenOrBetter == false)
+    assert(Hand.fromStr("Js 8d Qs").isUpCardQueenOrBetter == false)
+    assert(Hand.fromStr("4s 4d Kd").isUpCardQueenOrBetter == false)
+    assert(Hand.fromStr("Qc 8d 7s").isUpCardQueenOrBetter == true)
+    assert(Hand.fromStr("Kc 8d 7s").isUpCardQueenOrBetter == true)
+    assert(Hand.fromStr("Ac 8d 7s").isUpCardQueenOrBetter == true)
+  }
+
+  test("Card values") {
+    assert(Hand.fromStr("3c 8d 7s").cardValues()(2) == 6)
+    assert(Hand.fromStr("Ac 8d 7s").cardValues().deep == Array(5, 6, 12).deep)
+  }
+
+  test("Is Raisable") {
+    assert(Hand.fromStr("3c 8d 7s").isRaisable(Hand.symbolValue("A")) == false)
+    assert(Hand.fromStr("3c 8d 7s").isRaisable(Hand.symbolValue("Q")) == false)
+    assert(Hand.fromStr("3c 8d Ks").isRaisable(Hand.symbolValue("Q")) == true)
+    assert(Hand.fromStr("3c 8d Ks").isRaisable(Hand.symbolValue("K")) == false)
+    assert(Hand.fromStr("3c Td Ks").isRaisable(Hand.symbolValue("K")) == true)
+    assert(Hand.fromStr("3c Td Qs").isRaisable(Hand.symbolValue("Q")) == true)
+    assert(Hand.fromStr("3c 8d Qs").isRaisable(Hand.symbolValue("Q")) == false)
+
+    assert(Hand.fromStr("3c 8d 7s").isRaisable(9) == true)
+
+    assert(Hand.fromStr("3c 3d 7s").isRaisable(10) == true)
   }
 }

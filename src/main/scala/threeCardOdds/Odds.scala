@@ -1,30 +1,25 @@
 package threeCardOdds
 
-import scala.collection.mutable.ListBuffer
-
-
-
-class Deck() {
-  var choices = ListBuffer.tabulate(52)(_ + 0)
-  val r = scala.util.Random
-  var cards = ListBuffer[Int]()
-
-  while (choices.size > 0) {
-    cards.append(choices.remove(r.nextInt(choices.size)))
-  }
-
-  def nextThree(): Array[Int] = {
-    return Array[Int](cards.remove(0), cards.remove(0), cards.remove(0))
-  }
-//  println(cards)
-}
-
 object Main extends App {
-  val deck = new Deck()
+  var betAnte = 0
+  var betRaise = 0
 
-  val sixCards = new SixCards()
+  for (i<-0 to 10) {
+    val deck = Deck()
 
-  val dealer = new Hand(deck.nextThree())
-  val player = new Hand(deck.nextThree())
+    val dealer = new Hand(deck.nextThree())
+    val player = new Hand(deck.nextThree())
 
+    if (dealer.isQualified()) {
+      if (player.isRaisable(dealer.upCardValue())) {
+        betRaise += (if (dealer.strength > player.strength) -1 else 1)
+      }
+
+      betAnte += (if (dealer.strength > player.strength) -1 else 1)
+    } else {
+      betAnte += 1
+    }
+
+    println(s"$dealer ~~ $player  -- ${dealer.strength} ?? ${player.strength} ${dealer.isQualified()}  Ante = $betAnte; Raise=$betRaise; Net = ${betAnte + betRaise}")
+  }
 }

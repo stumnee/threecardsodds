@@ -19,7 +19,7 @@ object Hand {
   //                Eleven--+|
   //                   Ten-+||
   //             0123456789|||
-  val Numbers = "23456789TJQKA"
+  val Symbols = "23456789TJQKA"
   val Pair = 20000
   val Flush = 21000
   val Straight = 22000
@@ -31,10 +31,17 @@ object Hand {
     new Hand(cards)
   }
 
+  def symbolValue(ch: Char): Int = {
+    Symbols.indexOf(ch)
+  }
+  def symbolValue(s: String): Int = {
+    Symbols.indexOf(s)
+  }
   def fromStr(s: String): Hand = {
-    new Hand(s.split(" ").map(card => Numbers.indexOf(card.charAt(0)) + Suites.indexOf(card.charAt(1)) * 13).toArray )
+    new Hand(s.split(" ").map(card => symbolValue(card.charAt(0)) + Suites.indexOf(card.charAt(1)) * 13).toArray )
   }
 }
+
 class Hand (cards: Array[Int]) {
 
   val flush = cards.map(_ / 13).distinct.length == 1
@@ -46,7 +53,7 @@ class Hand (cards: Array[Int]) {
   val wheel = (sorted(0) + 1 == sorted(1) && sorted(0) + 12 == sorted(2))
   val straight = (sorted(0) + 1 == sorted(1) && sorted(1) + 1 == sorted(2)) || wheel
 
-  var strength = if (wheel) {
+  var score = if (wheel) {
     13 * sorted(0) + 169 * sorted(1)
   } else if (pair && sorted(0) == sorted(1)) { // example 22A
     sorted(2) + sorted(0) * 13 + sorted(1) * 169
@@ -55,25 +62,37 @@ class Hand (cards: Array[Int]) {
   }
 
   if (isMiniRoyal()) {
-    strength += Hand.Royal
+    score += Hand.Royal
   } else if (isStraightFlush()) {
-    strength += Hand.StraightFlush
+    score += Hand.StraightFlush
   } else if (isTrips()) {
-    strength += Hand.Trips
+    score += Hand.Trips
   } else if (isStraight()) {
-    strength += Hand.Straight
+    score += Hand.Straight
   } else if (isFlush()) {
-    strength += Hand.Flush
+    score += Hand.Flush
   } else if (isPair()) {
-    strength += Hand.Pair
+    score += Hand.Pair
   }
 
-  def handStrength(): Int = {
-    strength
+  def strength(): Int = {
+    score
+  }
+
+  def upCardValue(): Int = {
+    cards(0) % 13
+  }
+
+  def isUpCardQueenOrBetter(): Boolean = {
+    upCardValue() >= 10
   }
 
   def isQualified(): Boolean = {
-    strength > 169 * Hand.Numbers.indexOf("Q") // at least a Queen
+    score > 169 * Hand.symbolValue("Q") // at least a Queen
+  }
+
+  def cardValues(): Array[Int] = {
+    sorted
   }
 
   def isPair(): Boolean = {
@@ -97,11 +116,23 @@ class Hand (cards: Array[Int]) {
   }
 
   def isMiniRoyal(): Boolean = {
-    straight && flush && sorted(2) == 12 //Ace
+    straight && flush && sorted(2) == Hand.symbolValue("A") //Ace
+  }
+
+  def isRaisable(upCard: Int): Boolean = {
+    if (upCard < Hand.symbolValue("Q") || score > Hand.Pair) {
+      return true
+    }
+
+    if (upCard < sorted(2)) {
+      return true
+    }
+
+    return upCard == sorted(2) && sorted(1) > Hand.symbolValue("9") // second best card 9 or better
   }
 
   override def toString: String = {
-    cards.map(c => Hand.Numbers.charAt(c % 13).toString +  Hand.Suites.charAt(c / 13)).mkString(" ") + " --  " + strength
+    cards.map(c => Hand.Symbols.charAt(c % 13).toString +  Hand.Suites.charAt(c / 13)).mkString(" ")
   }
 
 }
