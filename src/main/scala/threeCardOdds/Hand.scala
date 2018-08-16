@@ -50,7 +50,7 @@ class Hand (cards: Array[Int]) {
   val trips = sorted.distinct.length == 1
   val pair = sorted.distinct.length == 2
 
-  val wheel = (sorted(0) + 1 == sorted(1) && sorted(0) + 12 == sorted(2))
+  val wheel = sorted(0) == 0 && sorted(1) == 1 && sorted(2) == 12
   val straight = (sorted(0) + 1 == sorted(1) && sorted(1) + 1 == sorted(2)) || wheel
 
   var score = if (wheel) {
@@ -111,12 +111,16 @@ class Hand (cards: Array[Int]) {
     straight
   }
 
+  def isWheel(): Boolean = {
+    wheel
+  }
+
   def isStraightFlush(): Boolean = {
     straight && flush
   }
 
   def isMiniRoyal(): Boolean = {
-    straight && flush && sorted(2) == Hand.symbolValue("A") //Ace
+    straight && flush && sorted(0) == Hand.symbolValue("Q") //QKA
   }
 
   def isRaisable(upCard: Int): Boolean = {
