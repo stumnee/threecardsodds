@@ -13,8 +13,9 @@ object Main extends App {
   var royal = 0
 
   var pp = ListBuffer[String]()
+  var sc = ListBuffer[SixCardsType]()
 
-  val max = 1000000
+  val max = 100
 
   for (i<-0 to max) {
     val deck = Deck()
@@ -41,9 +42,11 @@ object Main extends App {
       betAnte += 1
     }
 
-//    if (power == "royal")
-//    println(s"$dealer ~~ $player  -- ${dealer.strength} ?? ${player.strength} ${dealer.isQualified()} $power")
+    val sixCards = new SixCards(dealer, player)
 
+    if (sixCards.getPower() != SixCardsTypes.None) {
+      sc += sixCards.getPower
+    }
     if (!power.isEmpty)
       pp += power
 
@@ -70,5 +73,19 @@ object Main extends App {
   }.sum
   println(s"bonus=$bonus net=${bonus - max} ${(bonus - max)* 100.0/max}%")
 
+
+  val sixCardsOdds = sc.groupBy(it=>it).mapValues(_.size)
+
+  println(sixCardsOdds)
+
+  println(sixCardsOdds.map{case(k,v)=>(k,v * 100.0/max)})
+
+
+  val scValues = (sc.groupBy(it=>it).map{case(k,v)=> (k,v.size * (k.getValue() + 1))})
+
+  println(scValues)
+
+
+  println((scValues.map(_._2).sum - max)*100.0/max + "%")
 
 }

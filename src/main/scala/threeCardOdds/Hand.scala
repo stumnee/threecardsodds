@@ -31,6 +31,10 @@ object Hand {
     new Hand(cards)
   }
 
+  def apply(s: String): Hand = {
+    new Hand(s)
+  }
+
   def symbolValue(ch: Char): Int = {
     Symbols.indexOf(ch)
   }
@@ -43,6 +47,9 @@ object Hand {
 }
 
 class Hand (cards: Array[Int]) {
+
+  // auxiliary constructor
+  def this(s: String) = this(s.split(" ").map(card => Hand.symbolValue(card.charAt(0)) + Hand.Suites.indexOf(card.charAt(1)) * 13).toArray )
 
   val flush = cards.map(_ / 13).distinct.length == 1
   val sorted = cards.map(_ % 13).sortWith((a, b) => a < b)
@@ -133,6 +140,10 @@ class Hand (cards: Array[Int]) {
     }
 
     return upCard == sorted(2) && sorted(1) > Hand.symbolValue("9") // second best card 9 or better
+  }
+
+  def getCards(): Array[Int] = {
+    cards
   }
 
   override def toString: String = {
