@@ -54,40 +54,25 @@ class Player(var idx: Int = -1, var isDealer: Boolean = false) {
   }
 
   def printWinLoss(): Unit = {
-
     println(this)
 
     val max = pairPlus.size
 
-    println(s"Ante = $betAnte; Raise=$betRaise; Net = ${betAnte + betRaise}")
+    val net = betAnte + betRaise
 
+    println(s"Ante = $betAnte; Raise=$betRaise; Net = $net; ")
 
 
     val pp = pairPlus.groupBy(it=>it).mapValues(_.size)
+    val ppVal = pp.map{case(k,v)=> v * (k.getValue() + (if (k.getValue() == 0) -1 else 0))}.sum
 
-    println("Pair Plus: " + pp)
+    println("Pair Plus: " + pp.mapValues(v=>s"$v/${v*100.0/max}%") + s" total=$ppVal/${ppVal * 100.0 / max}%")
 
-//    val pairPlusValues = (pp.groupBy(it=>it).map{case(k,v)=> (k,v.size * (k.getValue() + 1))})
-//
-//    println(pairPlusValues)
-//    println((pairPlusValues.map(_._2).sum - max)*100.0/max + "%")
-////
-//
-//
-//
+
     val sc = sixCards.groupBy(it=>it).mapValues(_.size)
+    val scVal = sc.map{case(k,v)=> v * (k.getValue() + (if (k.getValue() == 0) -1 else 0))}.sum
 
-    println("\nSix Cards: " + sc)
-//
-//    println(sixCardsOdds.map{case(k,v)=>(k,v * 100.0/max)})
-//
-//
-//    val scValues = (sc.groupBy(it=>it).map{case(k,v)=> (k,v.size * (k.getValue() + 1))})
-//
-//    println(scValues)
-//
-//
-//    println((scValues.map(_._2).sum - max)*100.0/max + "%")
+    println("Six Cards: " + sc.mapValues(v=>s"$v/${v*100.0/max}%") + s" total=$scVal/${scVal * 100.0 / max}%")
 
     println("\n\n")
   }

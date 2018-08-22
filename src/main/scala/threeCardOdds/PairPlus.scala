@@ -5,6 +5,10 @@ class PairPlusType(name: String, score: Int, payout: Int) {
     score
   }
 
+  def getValue(): Int = {
+    payout
+  }
+
   override def toString: String = name
 }
 

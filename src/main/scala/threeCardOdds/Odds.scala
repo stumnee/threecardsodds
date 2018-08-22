@@ -3,7 +3,7 @@ package threeCardOdds
 import scala.collection.mutable.ListBuffer
 
 object Main extends App {
-  val Max = 10
+  val Max = 1000
   val MaxPlayers = 6
 
   Player.spawn(MaxPlayers)
@@ -15,6 +15,7 @@ object Main extends App {
       player.hand = new Hand(deck.nextThree())
     }
 
+
     for (player <- Player.onlyPlayers) {
       player.calc()
     }
@@ -25,3 +26,4 @@ object Main extends App {
   }
 
 }
+
