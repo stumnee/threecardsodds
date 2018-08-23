@@ -1,7 +1,7 @@
 package threeCardOdds
 
 
-class SixCardsType (kind: String, value: Int) {
+class SixCardsType (kind: String, value: Int) extends BonusType {
   override def toString: String = kind
 
   def getValue(): Int = {

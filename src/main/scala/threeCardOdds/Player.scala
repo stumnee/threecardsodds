@@ -21,8 +21,8 @@ object Player {
 
 class Player(var idx: Int = -1, var isDealer: Boolean = false) {
 
-  var pairPlus = ListBuffer[PairPlusType]()
-  var sixCards = ListBuffer[SixCardsType]()
+  var pairPlus = ListBuffer[BonusType]()
+  var sixCards = ListBuffer[BonusType]()
 
   var betAnte = 0
   var betRaise = 0
@@ -51,29 +51,5 @@ class Player(var idx: Int = -1, var isDealer: Boolean = false) {
       "Dealer"
     else
       "Player " + this.idx
-  }
-
-  def printWinLoss(): Unit = {
-    println(this)
-
-    val max = pairPlus.size
-
-    val net = betAnte + betRaise
-
-    println(s"Ante = $betAnte; Raise=$betRaise; Net = $net; ")
-
-
-    val pp = pairPlus.groupBy(it=>it).mapValues(_.size)
-    val ppVal = pp.map{case(k,v)=> v * (k.getValue() + (if (k.getValue() == 0) -1 else 0))}.sum
-
-    println("Pair Plus: " + pp.mapValues(v=>s"$v/${v*100.0/max}%") + s" total=$ppVal/${ppVal * 100.0 / max}%")
-
-
-    val sc = sixCards.groupBy(it=>it).mapValues(_.size)
-    val scVal = sc.map{case(k,v)=> v * (k.getValue() + (if (k.getValue() == 0) -1 else 0))}.sum
-
-    println("Six Cards: " + sc.mapValues(v=>s"$v/${v*100.0/max}%") + s" total=$scVal/${scVal * 100.0 / max}%")
-
-    println("\n\n")
   }
 }

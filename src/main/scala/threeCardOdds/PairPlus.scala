@@ -1,6 +1,6 @@
 package threeCardOdds
 
-class PairPlusType(name: String, score: Int, payout: Int) {
+class PairPlusType(name: String, score: Int, payout: Int) extends BonusType {
   def getScore(): Int = {
     score
   }
