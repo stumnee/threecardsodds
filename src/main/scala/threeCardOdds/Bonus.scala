@@ -4,8 +4,8 @@ import scala.collection.mutable.ListBuffer
 
 
 object Bonus {
-  def percent(v: Int, max: Int) : Double = {
-    math.round(v*10000.0/max) / 100.0
+  def percent(v: Int, max: Int) : String = {
+    (math.round(v*10000.0/max) / 100.0) + "%"
   }
 
   def bonus (list: List[BonusType]): String = {
